@@ -1,0 +1,14 @@
+{% extends "webApp/base.html" %}
+
+{% block titulo %}
+     <h3>home</h3> 
+{% endblock titulo %}
+
+{% block content %}
+  
+    <li class="menu-item"><a href= {% url 'home' %}> inicio</a></li>        
+    <li class="menu-item"><a href=""  > xamen</a></li>
+    <li><a href="">Asignatura</a></li>
+    <li class="menu-item"><a href={% url 'cerrarsecion' %}>salir</a></li>
+
+{% endblock content %}

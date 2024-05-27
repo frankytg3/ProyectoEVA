@@ -1,0 +1,186 @@
+{% load static %}
+{% load widget_tweaks %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplicación EVA</title>
+    <link rel="stylesheet" href="{% static 'webApp/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar-custom {
+            background-color: #6a1b9a;
+        }
+
+        .navbar-custom .navbar-brand,
+        .navbar-custom .nav-link {
+            color: #fff;
+        }
+
+        .navbar-custom .nav-link:hover {
+            color: #d5d5d5;
+        }
+
+        .contenido {
+            padding: 20px;
+            margin: 20px auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 18px;
+            color: #333;
+        }
+
+        /* Estilos para los mensajes de error */
+        .error-message {
+            color: red;
+            margin-bottom: 10px;
+        }
+
+        /* Estilos para el botón de registro */
+        .submit-button {
+            background-color: #6a1b9a;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-button:hover {
+            background-color: #4a148c;
+        }
+
+        .menu-icon {
+            display: none; /* Esconder hasta que se implemente el menú */
+        }
+
+        @media (max-width: 768px) {
+            .contenido {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            p {
+                font-size: 16px;
+            }
+        }
+        .main-content {
+            margin-bottom: 100px; /* Ajusta el valor según sea necesario */
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href={% url 'baner' %}><h5>Aplicación EVA</h5></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href={% url 'baner' %}>Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/registrar">Registrar</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Acerca de</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contacto</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    {% if pagina == 'inicio' %}
+        <div class="container mt-5">
+            <div class="contenido">
+                <h1 class="text-center">Bienvenido a la Aplicación EVA</h1>
+                <p class="text-center">Plataforma de Evaluación Virtual para Estudiantes</p>
+            </div>
+        </div>
+    {% elif pagina == 'registrar' %}
+        <div class="container mt-5">
+            <div class="contenido">
+                <h1 class="text-center">Regístrate en la Aplicación EVA</h1>
+                <p class="text-center">Elige una opción</p>
+                <!-- Aquí puedes poner el formulario de registro u otro contenido -->
+            </div>
+        </div>
+    {% elif pagina == 'registrarEstudiante' %}
+        <div class="container mt-5">
+            <div class="contenido">
+                <h1 class="text-center">Regístrate como Estudiante</h1>
+                <p class="text-center">Completa el formulario para registrarte</p>
+                <!-- Aquí puedes poner el formulario de registro u otro contenido -->
+            </div>
+        </div>
+    {% elif pagina == 'registrarDocente' %}
+        <div class="container mt-5">
+            <div class="contenido">
+                <h1 class="text-center">Regístrate como Docente</h1>
+                <p class="text-center">Completa el formulario para registrarte</p>
+                <!-- Aquí puedes poner el formulario de registro u otro contenido -->
+            </div>
+        </div>
+    {% endif %}
+
+    {% block titulo %}
+
+        
+
+    {% endblock titulo %}
+
+    <div class="container mt-5 main-content">
+        {% block content %}
+        {% endblock content %}
+    </div>
+
+    <nav class="navbar navbar-dark fixed-bottom" style="background-color: rgba(0, 0, 0, 0.8);">
+        <div class="container-fluid text-center">
+            <div class="mt-2">
+                <span class="text-white">© 2024 Aplicación EVA. Todos los derechos reservados.</span>
+            </div>
+            <div class="mt-2">
+                <a href="https://www.facebook.com/" class="navbar-text mx-1 text-white"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="navbar-text mx-1 text-white"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="navbar-text mx-1 text-white"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="navbar-text mx-1 text-white"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+    </nav>
+    
+    
+
+    
+    
+
+    <script src="{% static 'webApp/js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

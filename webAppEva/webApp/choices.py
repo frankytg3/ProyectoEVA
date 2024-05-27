@@ -17,6 +17,11 @@ modalida=(
     ('VT','VIRTUAL')
     
 )
+persona=(
+    ('estudiante','ESTUDIANTE'),
+    ('profesor','PROFESOR')
+    
+)
 opcionesRpta=(
     ('A','opcion A'),
     ('B','opcion B'),

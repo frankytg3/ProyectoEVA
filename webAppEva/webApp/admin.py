@@ -19,13 +19,13 @@ class preguntaAdmin(admin.ModelAdmin):
     list_display=("evaluacion","texto")
 
 class opcionesAdmin(admin.ModelAdmin):
-    list_display=("pregunta","respuesta")
+    list_display=("pregunta","opcion","respuesta")
 
 class calificacionesAdmin(admin.ModelAdmin):
     list_display=("estudiante","curso","examen","nota")
 
 class monitoreoAdmin(admin.ModelAdmin):
-    list_display=("cantErrorFacial","porcenComportamiento","tiempoPromedio","tiempoPorPregunta","tiempoPorPregunta")
+    list_display=("evaluacion","estudiante","cantErrorFacial","porcenComportamiento","tiempoPromedio","tiempoPorPregunta","tiempoPorPregunta","porcenPlagioTotal")
 
 # salon--(pendiente)
 """

@@ -1,0 +1,70 @@
+{% extends "webApp/base.html" %}
+{% load static %}
+{% block titulo %}
+{% endblock titulo %}
+
+{% block content %}
+<div class="container mt-5">
+    <h3 class="text-center mb-4">Registrar</h3>
+    <div class="row justify-content-center">
+        <div class="col-md-5 mb-3">
+            <div class="card shadow-lg hover-card">
+                <img src="{% static 'webApp/img/teacher.jpg' %}" class="card-img-top" alt="Registrar Docente">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Registrar Docente</h5>
+                    <p class="card-text">Únete a nuestro equipo docente.</p>
+                    <a href="/registrarDocentes" class="btn btn-primary stretched-link">Registrar Docente</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5 mb-3">
+            <div class="card shadow-lg hover-card">
+                <img src="{% static 'webApp/img/student.jpg' %}" class="card-img-top" alt="Registrar Estudiante">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Registrar Estudiante</h5>
+                    <p class="card-text">Forma parte de nuestra comunidad estudiantil.</p>
+                    <a href="/registrarEstudiantes" class="btn btn-primary stretched-link">Registrar Estudiante</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+<style>
+    .hover-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .hover-card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        color: #6a1b9a;
+        font-weight: bold;
+    }
+
+    .card-text {
+        font-size: 1rem;
+        color: #555;
+    }
+
+    .stretched-link {
+        position: relative;
+        z-index: 1;
+    }
+
+    .stretched-link::after {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: -1;
+        content: "";
+    }
+</style>

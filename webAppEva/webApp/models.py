@@ -144,12 +144,18 @@ class Calificaciones(models.Model):
 #tabla Monitoreo de examen por tiempo
 
 class MonitoreoExamen(models.Model):
-
+    
+    evaluacion = models.ForeignKey(Evaluaciones, on_delete=models.CASCADE)
+    estudiante=models.ForeignKey(Estudiante,on_delete=models.CASCADE)
     porcenPlagioTotal=models.FloatField(verbose_name="porcentaje plagio")
     cantErrorFacial=models.IntegerField(verbose_name="errores faciales")
     porcenComportamiento=models.FloatField(verbose_name="comp sospechoso")
     tiempoPromedio=models.TimeField(verbose_name="tiempo examen")
     tiempoPorPregunta=models.TimeField(verbose_name="tiempo pregunta")
+   
     
+   
+    
+   
 
 

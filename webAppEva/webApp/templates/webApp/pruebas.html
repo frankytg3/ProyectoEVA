@@ -1,0 +1,69 @@
+{% extends "webApp/base.html" %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="text-center mb-2">Registrar</h4>
+                    <form action="" method="post" novalidate>
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label for="id_curso" class="form-label">
+                                <h6>Curso</h6>
+                            </label>
+                            {{ formprueba.curso | add_class:"form-control form-control-sm " }}
+                            {% for error in formprueba.curso.errors %}
+                            <div class="error-message text-danger">
+                                {{ error }}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-4">
+                            <label for="id_docente" class="form-label">
+                                <h6>Docente</h6>
+                            </label>
+                            {{ formprueba.docente | add_class:"form-control" }}
+                            {% for error in formprueba.docente.errors %}
+                            <div class="error-message text-danger">
+                                {{ error }}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-4">
+                            <label for="id_nombre_Evaluacion" class="form-label">
+                                <h6>Nombre de Evaluación</h6>
+                            </label>
+                            {{ formprueba.nombre_Evaluacion | add_class:"form-control" }}
+                            {% for error in formprueba.nombre_Evaluacion.errors %}
+                            <div class="error-message text-danger">
+                                {{ error }}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-4">
+                            <label for="id_numPreguntas" class="form-label">
+                                <h6>Número de Preguntas</h6>
+                            </label>
+                            {{ formprueba.numPreguntas | add_class:"form-control" }}
+                            {% for error in formprueba.numPreguntas.errors %}
+                            <div class="error-message text-danger">
+                                {{ error }}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="error-message text-danger">
+                            {{ errorp }}
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-3">
+                            <h6>Registrarse</h6>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
