@@ -1,0 +1,95 @@
+{% load static %}
+{% load widget_tweaks %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Aplicación EVA{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'webApp/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+        }
+        .app-name-container {
+            background-color: #000000;
+            color: white;
+            text-align: center;
+            padding: 16px 0;
+            font-size: 28px;
+            box-shadow: 0 0px 4px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+        .sidebar {
+            width: 250px;
+            height: calc(100vh - 70px);
+            background-color: #f8f9fa;
+            padding: 20px;
+            position: fixed;
+            top: 70px;
+            left: 0;
+            border-right: 1px solid #dee2e6;
+            z-index: 900;
+        }
+        .main-content {
+            margin-top: 70px;
+            margin-left: 250px;
+            padding: 20px;
+            flex: 1;
+            overflow-y: auto;
+        }
+        .profile-pic {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+        }
+        .menu a {
+            display: block;
+            padding: 10px 15px;
+            margin: 5px 0;
+            text-decoration: none;
+            color: #333;
+            border-radius: 5px;
+        }
+        .menu a:hover {
+            background-color: #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-name-container">
+        <h4>EVALUACIONES VIRTUALES ASISTIDAS</h4>
+    </div>
+    <div class="sidebar text-center">
+        <img src="{% block profile_pic %}{% static 'webApp/img/image1.jpg' %}{% endblock %}" alt="Foto del Estudiante" class="profile-pic">
+        <h6>{% block student_name %}{% endblock %}</h6>
+        <div class="menu">
+            <a href="#"><i class="fas fa-user"></i> Perfil</a>
+            <a href="#"><i class="fas fa-book"></i> Asignaturas</a>
+            <a href="#"><i class="fas fa-chalkboard-teacher"></i> Profesores</a>
+            <a href="{% url 'cerrarsecion' %}"><i class="fas fa-sign-out-alt"></i> Salir</a>
+        </div>
+    </div>
+    <div class="main-content">
+        {% block content %}
+        <!-- Contenido de la página -->
+        {% endblock %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="{% static 'webApp/js/bootstrap.min.js' %}"></script>
+</body>
+</html>

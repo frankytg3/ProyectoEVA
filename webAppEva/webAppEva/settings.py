@@ -38,8 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'webApp',
-    'evaluaciones',
     'widget_tweaks',
+    'portalEstudiante',
 ]
 
 MIDDLEWARE = [

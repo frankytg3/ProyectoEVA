@@ -10,7 +10,7 @@ urlpatterns = [
     path('registrar/', registrar, name='registrar'),
     path('registrarDocentes/', registrarDocente, name='registrarDocentes'),
     path('registrarEstudiantes/', registrarEstudiante, name='registrarEstudiantes'),
-    path('cerrarSecion/',cerrarSecion, name='cerrarsecion'),
+    
     path('pruebas/',vistaPrueba, name='vistaprueba')
     
 ]
