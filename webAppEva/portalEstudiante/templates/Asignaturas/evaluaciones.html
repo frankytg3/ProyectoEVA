@@ -9,13 +9,20 @@
     <div class="row">
         {% if evaluaciones %}
             {% for evaluacion in evaluaciones %}
-                {% with calificacion=calificaciones|get_by_evaluacion:evalucion %}
+                {% with calificacion=calificaciones|get_by_evaluacion:evaluacion %}
                 <div class="col-12 mb-4">
-                    <div class="card h-100 {% if calificacion %} 
-                                        {% if calificacion.nota >= 5 %} bg-success 
-                                        {% elif calificacion.nota == 0 %} bg-danger 
-                                        {% else %} bg-warning {% endif %}
-                                        {% else %} bg-warning {% endif %}">
+                    <div class="card h-100 
+                        {% if calificacion %} 
+                            {% if calificacion.nota >= 5 %} 
+                                bg-success 
+                            {% elif calificacion.nota == 0 %} 
+                                bg-danger 
+                            {% else %} 
+                                bg-warning 
+                            {% endif %}
+                        {% else %} 
+                            bg-warning 
+                        {% endif %}">
                         <div class="card-body">
                             <h5 class="card-title">{{ evaluacion.nombre_Evaluacion }}</h5>
                             <p class="card-text">Fecha de creación: {{ evaluacion.fecha_creacion|date:"d/m/Y" }}</p>
@@ -31,7 +38,15 @@
                                 <p class="card-text">Nota: Sin evaluar</p>
                                 <p class="card-text">Estado: No realizada</p>
                             {% endif %}
-                            <a href="{% url 'detalle_evaluacion' evaluacion.id %}" class="btn btn-primary">Ver contenido</a>
+                            <a href="{% url 'detalle_evaluacion' evaluacion.id %}" class="btn btn-primary">
+                                {% if calificacion and calificacion.nota > 0 %}
+                                    Visualizar
+                                {% elif evaluacion.fecha_fin and evaluacion.fecha_fin < today %}
+                                    Visualizar
+                                {% else %}
+                                    Realizar evaluación
+                                {% endif %}
+                            </a>
                         </div>
                     </div>
                 </div>

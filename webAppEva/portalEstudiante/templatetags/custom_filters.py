@@ -5,4 +5,4 @@ register = template.Library()
 
 @register.filter
 def get_by_evaluacion(calificaciones, evaluacion):
-    return calificaciones.filter(examen=evaluacion).first()
+    return calificaciones.filter(evaluacion=evaluacion).first()

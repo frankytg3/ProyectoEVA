@@ -6,6 +6,7 @@ from django.db import IntegrityError
 from webApp.forms import FormDocentes, FormEstudiate,FormPrueba, FormCurso
 from webApp.models import Docente, Estudiante
 from django.contrib import messages
+
 # Create your views here.
 
 def registrarDocente(request):

@@ -3,6 +3,7 @@ from datetime import timedelta
 from .choices import sexos, seccion, modalida, validate_nota, opcionesRpta
 from django.contrib.auth.models import User
 
+
 # Create your models here.
 
 #tabla Docente -----------------------
@@ -142,7 +143,7 @@ class OpcionRespuesta(models.Model):
 class Calificaciones(models.Model):
     estudiante=models.ForeignKey(Estudiante,on_delete=models.CASCADE)
     curso=models.ForeignKey(Curso, on_delete=models.CASCADE)
-    examen=models.ForeignKey(Evaluaciones,on_delete=models.CASCADE)
+    evaluacion=models.ForeignKey(Evaluaciones,on_delete=models.CASCADE)
     nota=models.FloatField(validators=[validate_nota])
     
 #tabla Monitoreo de examen por tiempo

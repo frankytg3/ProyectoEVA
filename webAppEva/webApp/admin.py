@@ -4,7 +4,7 @@ from .models import OpcionRespuesta, Calificaciones, MonitoreoExamen  #, salon
 # Register your models here.
 
 class docenteAdmin (admin.ModelAdmin):
-    list_display=("apellido_paterno","apellido_materno","nombres","telefono","direccion")
+    list_display=("user","apellido_paterno","apellido_materno","nombres","telefono","direccion")
 
 class cursoAdmin(admin.ModelAdmin):
     list_display=("nombre","docente")
@@ -22,7 +22,7 @@ class opcionesAdmin(admin.ModelAdmin):
     list_display=("pregunta","opcion","respuesta")
 
 class calificacionesAdmin(admin.ModelAdmin):
-    list_display=("estudiante","curso","examen","nota")
+    list_display=("estudiante","curso","evaluacion","nota")
 
 class monitoreoAdmin(admin.ModelAdmin):
     list_display=("evaluacion","estudiante","cantErrorFacial","porcenComportamiento","tiempoPromedio","tiempoPorPregunta","tiempoPorPregunta","porcenPlagioTotal")
