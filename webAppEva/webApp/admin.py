@@ -7,10 +7,10 @@ class docenteAdmin (admin.ModelAdmin):
     list_display=("apellido_paterno","apellido_materno","nombres","telefono","direccion")
 
 class cursoAdmin(admin.ModelAdmin):
-    list_display=("nombre",)
+    list_display=("nombre","docente")
 
 class estudianteAdmin(admin.ModelAdmin):
-    list_display=("apellido_paterno","apellido_materno","nombres")
+    list_display=("user","apellido_paterno","apellido_materno","nombres")
 
 class evaluacionesAdmin (admin.ModelAdmin):
     list_display=("curso","docente","nombre_Evaluacion","numPreguntas","fecha_creacion")

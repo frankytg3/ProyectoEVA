@@ -1,11 +1,13 @@
 from django.db import models
 from datetime import timedelta
 from .choices import sexos, seccion, modalida, validate_nota, opcionesRpta
+from django.contrib.auth.models import User
 
 # Create your models here.
 
 #tabla Docente -----------------------
 class Docente(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='docente')
     apellido_paterno=models.CharField(max_length=20, verbose_name='Apeliido Paterno')
     apellido_materno=models.CharField(max_length=20, verbose_name='Apellido Materno')
     nombres=models.CharField(max_length=20)
@@ -30,7 +32,8 @@ class Docente(models.Model):
 #tabla Curso ------------------------------
 class Curso(models.Model):
     nombre=models.CharField(max_length=20)
-    
+    docente = models.ForeignKey(Docente, on_delete=models.CASCADE, related_name='cursos')
+
     class Meta:
         verbose_name='curso'
         verbose_name_plural='cursos'
@@ -42,6 +45,7 @@ class Curso(models.Model):
 
 #tabla estudiante-----------------------------
 class Estudiante(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='estudiante')
     apellido_paterno=models.CharField(max_length=20, verbose_name='Apeliido Paterno')
     apellido_materno=models.CharField(max_length=20, verbose_name='Apellido Materno')
     nombres=models.CharField(max_length=20)

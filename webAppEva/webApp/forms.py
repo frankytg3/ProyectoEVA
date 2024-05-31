@@ -29,7 +29,7 @@ class FormDocentes(forms.Form):
 class FormEstudiate(forms.Form):
     correo = forms.EmailField(label="Correo electrónico",validators=[dominio_continental_validator])
     apellido_Paterno=forms.CharField(max_length=20,validators=[no_numeros_validator])
-    apellido_Materno=forms.CharField(max_length=20,validators=[no_numeros_validator])
+    apellido_Materno=forms.CharField(max_length=20,validators=[no_numeros_validator])   
     nombres=forms.CharField(max_length=20,validators=[no_numeros_validator])
     fecha_Nacimiento=forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
     sexo = forms.ChoiceField(choices=sexos, initial='-')

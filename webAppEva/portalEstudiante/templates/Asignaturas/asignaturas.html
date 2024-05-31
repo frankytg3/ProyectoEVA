@@ -1,1 +1,27 @@
-aqui se muestran la Asignaturas
+{% extends "portalEstudiante/base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block student_name %}prueba de estudiante{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        {% if cursos %}
+            {% for curso in cursos %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ curso.nombre }}</h5>
+                            <p class="card-text">Profesor: {{ curso.docente.nombre_completo }}</p>
+                            <a href="{% url 'evaluaciones' curso.id %}" class="btn btn-primary">Ver contenido</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No hay cursos disponibles.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

@@ -5,156 +5,81 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from webApp.forms import FormDocentes, FormEstudiate,FormPrueba, FormCurso
 from webApp.models import Docente, Estudiante
+from django.contrib import messages
 # Create your views here.
 
 def registrarDocente(request):
-    
-    formdocente = FormDocentes()
-    formRegister = UserCreationForm() 
-        
-    if request.method == "GET":
-        print("mostrando formulario")  
-        return render(request, "registration/registrarDocentes.html", {
-            'formUser':formRegister,
-            'formDocente':formdocente,
-            'pagina': 'registrarDocente'
-        })  
-        
-    elif request.method == "POST":
-        
-        print("enviar datos...")
-        pass1=request.POST['password1']
-        pass2=request.POST['password2']
-        
-        if pass1 == pass2:
-            print("contraseña valida ")
-            formdocente = FormDocentes(request.POST)
-            formRegister = UserCreationForm(request.POST)
-            if formdocente.is_valid():
-                try:
-                    nomUser=request.POST['username']
-                    correo=request.POST['correo']
-                    paterno=request.POST['apellido_Paterno']
-                    materno=request.POST['apellido_Materno']
-                    nombre=request.POST['nombres']
-                    nacimiento=request.POST['fecha_Nacimiento']
-                    sex=request.POST['sexo']
-                    direcc=request.POST['direccion']
-                    celular=request.POST['telefono']
-        
-                    print("guardando datos usuario y docente")
-                    user = User.objects.create_user(username=nomUser,email=correo, password=pass1)
-                    user.save()
-                    
-                    profesor= Docente.objects.create(
-                        apellido_paterno=paterno,
-                        apellido_materno=materno,
-                        nombres=nombre,
-                        fecha_nacimiento=nacimiento,
-                        sexo=sex,
-                        direccion=direcc,
-                        telefono=celular
-                    )
-                    profesor.save()
-                    
-                    return redirect('login')
-                except IntegrityError:
-                    return render(request, "registration/registrarDocentes.html", {
-                    'formUser':formRegister,
-                    'formDocente':formdocente,
-                    'pagina': 'registrarDocente'
-                    })   
-            else:
-                print("hay errores en los datos")
+    if request.method == "POST":
+        formDocente = FormDocentes(request.POST)
+        formRegister = UserCreationForm(request.POST)
+        if formDocente.is_valid() and formRegister.is_valid():
+            try:
+                user = formRegister.save(commit=False)
+                user.email = formDocente.cleaned_data['correo']
+                user.save()
                 
-                return render(request, "registration/registrarDocentes.html", {
-                    'formUser':formRegister,
-                    'formDocente':formdocente,
-                    'errorp':"Existen errores en los Datos del Usuario",
-                    'pagina': 'registrarDocente'
-                })
-        else:              
-            return render(request, "registration/registrarDocentes.html", {
-                'formUser':formRegister,
-                'formDocente':formdocente,
-                'errorp':"Contraseñas Diferentes ",
-                'pagina': 'registrarDocente'
-            })
+                # Crear docente asociado al usuario
+                Docente.objects.create(
+                    user=user,
+                    apellido_paterno=formDocente.cleaned_data['apellido_Paterno'],
+                    apellido_materno=formDocente.cleaned_data['apellido_Materno'],
+                    nombres=formDocente.cleaned_data['nombres'],
+                    fecha_nacimiento=formDocente.cleaned_data['fecha_Nacimiento'],
+                    sexo=formDocente.cleaned_data['sexo'],
+                    direccion=formDocente.cleaned_data['direccion'],
+                    telefono=formDocente.cleaned_data['telefono']
+                )
+                
+                messages.success(request, 'Docente registrado exitosamente. Por favor inicia sesión.')
+                return redirect('login')
+            except IntegrityError:
+                messages.error(request, 'Error: El nombre de usuario ya está en uso.')
+        else:
+            messages.error(request, 'Existen errores en los Datos del Usuario')
+    else:
+        formDocente = FormDocentes()
+        formRegister = UserCreationForm()
+    
+    return render(request, "registration/registrarDocentes.html", {
+        'formUser': formRegister,
+        'formDocente': formDocente,
+        'pagina': 'registrarDocente',
+    })
 
-from django.contrib.auth import login  # Importa la función login de django.contrib.auth
 
 def registrarEstudiante(request):
+    if request.method == "POST":
+        formEstudiante = FormEstudiate(request.POST)
+        formRegister = UserCreationForm(request.POST)
+        if formEstudiante.is_valid() and formRegister.is_valid():
+            try:
+                correo = formEstudiante.cleaned_data['correo']
+                user = formRegister.save(commit=False)  # Guardar usuario
+                user.email = correo  # Establecer el correo electrónico del usuario
+                user.save()
+                # Crear estudiante asociado al usuario
+                Estudiante.objects.create(
+                    user=user,
+                    apellido_paterno=formEstudiante.cleaned_data['apellido_Paterno'],
+                    apellido_materno=formEstudiante.cleaned_data['apellido_Materno'],
+                    nombres=formEstudiante.cleaned_data['nombres'],
+                    fecha_nacimiento=formEstudiante.cleaned_data['fecha_Nacimiento'],
+                    sexo=formEstudiante.cleaned_data['sexo'],
+                )
+                messages.success(request, 'Usuario registrado exitosamente. Por favor inicia sesión.')
+                return redirect('login')
+            except IntegrityError:
+                messages.error(request, 'Error: El nombre de usuario ya está en uso.')
+    else:
+        formEstudiante = FormEstudiate()
+        formRegister = UserCreationForm()
     
-    formEstudiante = FormEstudiate()
-    formRegister = UserCreationForm() 
-        
-    if request.method == "GET":
-        print("mostrando formulario")  
-        return render(request, "registration/registrarEstudiantes.html", {
-            'formUser':formRegister,
-            'formEstudiante':formEstudiante,
-            'pagina': 'registrarEstudiante',
-        })  
-        
-    elif request.method == "POST":
-        
-        print("enviar datos...")
-        pass1=request.POST['password1']
-        pass2=request.POST['password2']
-        
-        if pass1 == pass2:
-            print("contraseña valida ")
-            formEstudiante = FormEstudiate(request.POST)
-            formRegister = UserCreationForm(request.POST)
-            if formEstudiante.is_valid():
-                try:
-                    nomUser=request.POST['username']
-                    correo=request.POST['correo']
-                    paterno=request.POST['apellido_Paterno']
-                    materno=request.POST['apellido_Materno']
-                    nombre=request.POST['nombres']
-                    nacimiento=request.POST['fecha_Nacimiento']
-                    sex=request.POST['sexo']
-                    
-        
-                    print("guardando datos usuario y Estudiante")
-                    user = User.objects.create_user(username=nomUser,email=correo, password=pass1)
-                    user.save()
-                    
-                    estudiante= Estudiante.objects.create(
-                        apellido_paterno=paterno,
-                        apellido_materno=materno,
-                        nombres=nombre,
-                        fecha_nacimiento=nacimiento,
-                        sexo=sex,
-                        
-                    )
-                    estudiante.save()
-                    
-                    return redirect('login')  
-                
-                except IntegrityError:
-                    return render(request, "registration/registrarEstudiantes.html", {
-                    'formUser':formRegister,
-                    'formEstudiante':formEstudiante,
-                    'pagina': 'registrarEstudiante',
-                    })   
-            else:
-                print("hay errores en los datos")
-                
-                return render(request, "registration/registrarEstudiantes.html", {
-                    'formUser':formRegister,
-                    'formEstudiante':formEstudiante,
-                    'errorp':"Existen errores en los Datos del Usuario",
-                    'pagina': 'registrarEstudiante',
-                })
-        else:              
-            return render(request, "registration/registrarEstudiantes.html", {
-                'formUser':formRegister,
-                'formEstudiante':formEstudiante,
-                'errorp':"Contraseñas Diferentes ",
-                'pagina': 'registrarEstudiante'
-            })
+    return render(request, "registration/registrarEstudiantes.html", {
+        'formUser': formRegister,
+        'formEstudiante': formEstudiante,
+        'pagina': 'registrarEstudiante',
+    })
+
 
 def iniciarsecion(request):
     if request.method == 'POST':
@@ -162,7 +87,7 @@ def iniciarsecion(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('banerPortal')
+            return redirect('asignatura')
         else:
             return render(request, 'registration/login.html', {
                 'pagina': 'inicio',
@@ -174,11 +99,6 @@ def iniciarsecion(request):
             'pagina': 'inicio',
             'formLogin': form
         })
-
-        
-         
-
-    
 
 def vistaPrueba(request):
     if request.method == "POST":
