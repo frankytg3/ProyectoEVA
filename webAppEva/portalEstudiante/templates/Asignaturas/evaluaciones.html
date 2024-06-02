@@ -5,56 +5,64 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2>Evaluaciones del curso: {{ curso.nombre }}</h2>
-    <div class="row">
-        {% if evaluaciones %}
-            {% for evaluacion in evaluaciones %}
-                {% with calificacion=calificaciones|get_by_evaluacion:evaluacion %}
-                <div class="col-12 mb-4">
-                    <div class="card h-100 
-                        {% if calificacion %} 
-                            {% if calificacion.nota >= 5 %} 
-                                bg-success 
-                            {% elif calificacion.nota == 0 %} 
-                                bg-danger 
+    {% if error %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+    {% else %}
+        <h2>Evaluaciones del curso: {{ curso.nombre }}</h2>
+        <div class="row">
+            {% if evaluaciones %}
+                {% for evaluacion in evaluaciones %}
+                    {% with calificacion=calificaciones|get_by_evaluacion:evaluacion %}
+                    <div class="col-12 mb-4">
+                        <div class="card h-100 
+                            {% if calificacion %} 
+                                {% if calificacion.nota >= 5 %} 
+                                    bg-success 
+                                {% elif calificacion.nota == 0 %} 
+                                    bg-danger 
+                                {% else %} 
+                                    bg-warning 
+                                {% endif %}
                             {% else %} 
                                 bg-warning 
-                            {% endif %}
-                        {% else %} 
-                            bg-warning 
-                        {% endif %}">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ evaluacion.nombre_Evaluacion }}</h5>
-                            <p class="card-text">Fecha de creación: {{ evaluacion.fecha_creacion|date:"d/m/Y" }}</p>
-                            {% if calificacion %}
-                                {% if calificacion.nota > 0 %}
-                                    <p class="card-text">Nota: {{ calificacion.nota }}</p>
-                                    <p class="card-text">Estado: Realizada</p>
+                            {% endif %}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ evaluacion.nombre_Evaluacion }}</h5>
+                                <p class="card-text">Fecha de creación: {{ evaluacion.fecha_creacion|date:"d/m/Y" }}</p>
+                                <p class="card-text">Fecha de finalización: {{ evaluacion.fecha_fin|date:"d/m/Y" }}</p>
+                                <p class="card-text">Duracion: {{ evaluacion.duracion}} minutos</p>
+                                {% if calificacion %}
+                                    {% if calificacion.nota > 0 %}
+                                        <p class="card-text">Nota: {{ calificacion.nota }}</p>
+                                        <p class="card-text">Estado: Realizada</p>
+                                    {% else %}
+                                        <p class="card-text">Nota: {{ calificacion.nota }}</p>
+                                        <p class="card-text">Estado: No realizada</p>
+                                    {% endif %}
                                 {% else %}
-                                    <p class="card-text">Nota: 0</p>
+                                    <p class="card-text">Nota: Sin evaluar</p>
                                     <p class="card-text">Estado: No realizada</p>
                                 {% endif %}
-                            {% else %}
-                                <p class="card-text">Nota: Sin evaluar</p>
-                                <p class="card-text">Estado: No realizada</p>
-                            {% endif %}
-                            <a href="{% url 'detalle_evaluacion' evaluacion.id %}" class="btn btn-primary">
-                                {% if calificacion and calificacion.nota > 0 %}
-                                    Visualizar
-                                {% elif evaluacion.fecha_fin and evaluacion.fecha_fin < today %}
-                                    Visualizar
-                                {% else %}
-                                    Realizar evaluación
-                                {% endif %}
-                            </a>
+                                <a href="{% url 'detalle_evaluacion' evaluacion.id %}" class="btn btn-primary">
+                                    {% if calificacion and calificacion.nota > 0 %}
+                                        Visualizar
+                                    {% elif evaluacion.fecha_fin and evaluacion.fecha_fin < today %}
+                                        Visualizar
+                                    {% else %}
+                                        Realizar evaluación
+                                    {% endif %}
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </div>
-                {% endwith %}
-            {% endfor %}
-        {% else %}
-            <p>No hay evaluaciones disponibles para este curso.</p>
-        {% endif %}
-    </div>
+                    {% endwith %}
+                {% endfor %}
+            {% else %}
+                <p>No hay evaluaciones disponibles para este curso.</p>
+            {% endif %}
+        </div>
+    {% endif %}
 </div>
 {% endblock content %}

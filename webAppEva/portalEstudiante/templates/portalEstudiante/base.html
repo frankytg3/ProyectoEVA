@@ -74,7 +74,7 @@
     </div>
     <div class="sidebar text-center">
         <img src="{% block profile_pic %}{% static 'webApp/img/image1.jpg' %}{% endblock %}" alt="Foto del Estudiante" class="profile-pic">
-        <h6>{% block student_name %}{% endblock %}</h6>
+        <h6>{{ nombre_estudiante }}</h6>
         <div class="menu">
             <a href="#"><i class="fas fa-user"></i> Perfil</a>
             <a href="{% url 'asignatura' %}"><i class="fas fa-book"></i> Asignaturas</a>

@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import timedelta
+from django.utils import timezone
 from .choices import sexos, seccion, modalida, validate_nota, opcionesRpta
 from django.contrib.auth.models import User
 
@@ -55,7 +56,8 @@ class Estudiante(models.Model):
     
 
     def nombre_completo(self):
-        return "{} {}, {}".format(self.apellido_paterno, self.apellido_materno, self.nombres)
+        nombre_completo = "{} {}, {}".format(self.apellido_paterno, self.apellido_materno, self.nombres)
+        return nombre_completo.upper()
     
     def __str__(self):
         return self.nombre_completo()
@@ -107,7 +109,8 @@ class Evaluaciones(models.Model):
     nombre_Evaluacion=models.CharField(max_length=50, null=True, blank=True)
     numPreguntas=models.IntegerField(validators = [validate_nota])
     fecha_creacion = models.DateTimeField(auto_now_add=True)
-
+    fecha_fin = models.DateTimeField(null=True, blank=True)
+    duracion = models.IntegerField(help_text="Duración del examen en minutos", null=True, blank=True)
     class Meta:
         verbose_name='evaluacion'
         verbose_name_plural='evaluaciones'

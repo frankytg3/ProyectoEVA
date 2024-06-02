@@ -13,7 +13,7 @@ class estudianteAdmin(admin.ModelAdmin):
     list_display=("user","apellido_paterno","apellido_materno","nombres")
 
 class evaluacionesAdmin (admin.ModelAdmin):
-    list_display=("curso","docente","nombre_Evaluacion","numPreguntas","fecha_creacion")
+    list_display=("curso","docente","nombre_Evaluacion","numPreguntas","duracion","fecha_creacion","fecha_fin")
 
 class preguntaAdmin(admin.ModelAdmin):
     list_display=("evaluacion","texto")
