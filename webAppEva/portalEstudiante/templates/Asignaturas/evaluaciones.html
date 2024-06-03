@@ -1,61 +1,53 @@
 {% extends "portalEstudiante/base.html" %}
+
 {% load static %}
 {% load widget_tweaks %}
 {% load custom_filters %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container mt-3">
     {% if error %}
         <div class="alert alert-danger" role="alert">
             {{ error }}
         </div>
     {% else %}
-        <h2>Evaluaciones del curso: {{ curso.nombre }}</h2>
+        <div class="container mt-3">
+            <div class="contenido">
+                <h2 class="text-center" style="font-family: 'Rockwell', sans-serif;">{{ curso.nombre|upper }}</h2>
+            </div>
+        </div>
         <div class="row">
             {% if evaluaciones_data %}
                 {% for data in evaluaciones_data %}
-                    {% with evaluacion=data.evaluacion calificacion=data.calificacion num_preguntas=data.num_preguntas %}
-                    <div class="col-12 mb-4">
-                        <div class="card h-100 
-                            {% if calificacion %} 
-                                {% if calificacion.nota >= 5 %} 
-                                    bg-success 
-                                {% elif calificacion.nota == 0 %} 
-                                    bg-danger 
-                                {% else %} 
-                                    bg-warning 
-                                {% endif %}
-                            {% else %} 
-                                bg-warning 
-                            {% endif %}">
+                    {% with evaluacion=data.evaluacion calificacion=data.calificacion num_preguntas=data.num_preguntas estado=data.estado %}
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4"> <!-- Controlamos el tamaño de las tarjetas -->
+                        <div class="card {% if estado == 'Realizada' %}card-realizada{% elif estado == 'Caducada' %}card-caducada{% elif estado == 'Pendiente' %}card-pendiente{% else %}card-no-disponible{% endif %}">
                             <div class="card-body">
-                                <h5 class="card-title">{{ evaluacion.nombre_Evaluacion }}</h5>
+                                <h4 class="card-title" style="text-align: center; font-family: 'Rockwell', sans-serif;">{{ evaluacion.nombre_Evaluacion }}</h4>
                                 <p class="card-text">Fecha de creación: {{ evaluacion.fecha_creacion|date:"d/m/Y" }}</p>
                                 <p class="card-text">Fecha de finalización: {{ evaluacion.fecha_fin|date:"d/m/Y" }}</p>
                                 <p class="card-text">Duración: {{ evaluacion.duracion }} minutos</p>
-                                {% if calificacion %}
-                                    {% if calificacion.nota > 0 %}
-                                        <p class="card-text">Nota: {{ calificacion.nota }}</p>
-                                        <p class="card-text">Estado: Realizada</p>
+                                <p class="card-text">Nota: 
+                                    {% if calificacion %}
+                                        {{ calificacion.nota }}
                                     {% else %}
-                                        <p class="card-text">Nota: {{ calificacion.nota }}</p>
-                                        <p class="card-text">Estado: No realizada</p>
+                                        Sin evaluar
                                     {% endif %}
-                                {% else %}
-                                    <p class="card-text">Nota: Sin evaluar</p>
-                                    <p class="card-text">Estado: No realizada</p>
-                                {% endif %}
-                                <a href="{% url 'detalle_evaluacion' evaluacion.id %}" class="btn btn-primary {% if num_preguntas == 0 %} disabled {% endif %}">
-                                    {% if num_preguntas == 0 %}
-                                        Aún no disponible
-                                    {% elif calificacion and calificacion.nota > 0 %}
-                                        Visualizar
-                                    {% elif evaluacion.fecha_fin and evaluacion.fecha_fin < today %}
-                                        Visualizar
-                                    {% else %}
-                                        Realizar evaluación
-                                    {% endif %}
-                                </a>
+                                </p>
+                                <p class="card-text">Estado: {{ estado }}</p>
+                                <div style="text-align: center;">
+                                    <a href="{% if num_preguntas == 0 %}#{% elif estado == 'Realizada' or estado == 'Caducada' %}{% url 'retroalimentacion' evaluacion.id %}{% else %}{% url 'detalle_evaluacion' evaluacion.id %}{% endif %}" class="btn btn-primary {% if num_preguntas == 0 or estado == 'Caducada' %}disabled{% endif %}">
+                                        {% if num_preguntas == 0 %}
+                                            Aún no disponible
+                                        {% elif estado == 'Realizada' or estado == 'Caducada' %}
+                                            Visualizar
+                                        {% else %}
+                                            Realizar evaluación
+                                        {% endif %}
+                                    </a>
+                                             
+                                </div>
+                                
                             </div>
                         </div>
                     </div>
@@ -67,4 +59,4 @@
         </div>
     {% endif %}
 </div>
-{% endblock content %}
+{% endblock %}

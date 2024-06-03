@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import logout
-from webApp.models import Curso, Evaluaciones, Calificaciones, Estudiante,MonitoreoExamen
-from datetime import date
+from webApp.models import Curso, Evaluaciones, Calificaciones, Estudiante,MonitoreoExamen, OpcionRespuesta, Respuesta
+from datetime import date , timedelta
+import pytz
+
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
@@ -16,6 +18,7 @@ def asignatura(request):
     }
     return render(request, "Asignaturas/asignaturas.html",context)
 
+@login_required
 def evaluaciones(request, id):
     try:
         curso = get_object_or_404(Curso, id=id)
@@ -23,18 +26,32 @@ def evaluaciones(request, id):
         calificaciones = Calificaciones.objects.filter(estudiante=request.user.estudiante, curso=curso)
         
         evaluaciones_data = []
+        today = date.today()
+
         for evaluacion in evaluaciones:
             num_preguntas = evaluacion.pregunta_set.count()
+            calificacion = calificaciones.filter(evaluacion=evaluacion).first()
+            estado = 'Sin evaluar'
+
+            if calificacion:
+                if calificacion.nota > 0:
+                    estado = 'Realizada'
+            elif evaluacion.fecha_fin and evaluacion.fecha_fin.date() < today:
+                estado = 'Caducada'
+            else:
+                estado = 'Disponible'
+
             evaluaciones_data.append({
                 'evaluacion': evaluacion,
-                'calificacion': calificaciones.filter(evaluacion=evaluacion).first(),
-                'num_preguntas': num_preguntas
+                'calificacion': calificacion,
+                'num_preguntas': num_preguntas,
+                'estado': estado,
             })
         
         context = {
             'curso': curso,
             'evaluaciones_data': evaluaciones_data,
-            'today': date.today(),
+            'today': today,
         }
         return render(request, 'Asignaturas/evaluaciones.html', context)
     except ObjectDoesNotExist:
@@ -64,12 +81,45 @@ def detalle_evaluacion(request, evaluacion_id):
     pregunta_idx = int(request.GET.get('pregunta', '0'))
 
     if pregunta_idx >= total_preguntas:
+        # Calcular la nota final antes de redirigir
+        calificacion = Calificaciones.objects.get(
+            estudiante=request.user.estudiante,
+            curso=evaluacion.curso,
+            evaluacion=evaluacion,
+        )
+        calificacion.nota = sum(
+            [r.pregunta.puntos for r in Respuesta.objects.filter(estudiante=request.user, pregunta__evaluacion=evaluacion, opcion_seleccionada__es_correcta=True)]
+        )
+        calificacion.save()
         return redirect('finalizar_evaluacion', evaluacion_id=evaluacion.id)
 
     pregunta = preguntas[pregunta_idx]
 
+    monitoreo_examen = MonitoreoExamen.objects.filter(evaluacion=evaluacion, estudiante=request.user.estudiante).first()
+
+    if not monitoreo_examen:
+        # Si no existe un registro en MonitoreoExamen, crea uno
+        monitoreo_examen = MonitoreoExamen.objects.create(
+            evaluacion=evaluacion,
+            estudiante=request.user.estudiante,
+            porcenPlagioTotal=0,
+            cantErrorFacial=0,
+            porcenComportamiento=0,
+            tiempoPromedio=timezone.now(),
+            tiempoPorPregunta=timezone.now(),
+            inicio_evaluacion=timezone.now()
+        )
+
     if request.method == 'POST':
-        seleccion = request.POST.get('opcion')
+        seleccion_id = request.POST.get('opcion')
+        if seleccion_id:
+            seleccion = OpcionRespuesta.objects.get(id=seleccion_id)
+            Respuesta.objects.create(
+                estudiante=request.user,
+                pregunta=pregunta,
+                opcion_seleccionada=seleccion
+            )
+
         calificacion, created = Calificaciones.objects.get_or_create(
             estudiante=request.user.estudiante,
             curso=evaluacion.curso,
@@ -77,23 +127,32 @@ def detalle_evaluacion(request, evaluacion_id):
             defaults={'nota': 0}
         )
 
-        monitoreo_examen, created = MonitoreoExamen.objects.get_or_create(
-            evaluacion=evaluacion,
-            estudiante=request.user.estudiante,
-            defaults={'porcenPlagioTotal': 0, 'cantErrorFacial': 0, 'porcenComportamiento': 0, 'tiempoPromedio': timezone.now(), 'tiempoPorPregunta': timezone.now()}
-        )
-
-        if not created:
-            # Actualiza la información de monitoreo si es necesario
-            monitoreo_examen.tiempoPorPregunta = timezone.now()
-            monitoreo_examen.save()
-
-        # Aquí debes guardar la respuesta seleccionada
-        # Guardar lógica de respuestas
+        # Actualiza el tiempo de la pregunta
+        monitoreo_examen.tiempoPorPregunta = timezone.now()
+        monitoreo_examen.save()
 
         return redirect(f'{request.path}?pregunta={pregunta_idx + 1}')
+    
+    # Calcula el tiempo restante basado en el inicio de la evaluación y la zona horaria local
+    zona_horaria = pytz.timezone('America/Lima')  # Cambia a la zona horaria que necesites
+    tiempo_inicio = monitoreo_examen.inicio_evaluacion.astimezone(zona_horaria)
+    tiempo_actual = timezone.now().astimezone(zona_horaria)
+    tiempo_pasado = tiempo_actual - tiempo_inicio
+    print("Zona horaria")
+    print(zona_horaria)
+    print("tiempo_inicio")
+    print(tiempo_inicio)
+    print("tiempo_actual")
+    print(tiempo_actual)
+    # Convertir la duración de la evaluación a timedelta
+    duracion_evaluacion = timedelta(minutes=evaluacion.duracion)
 
-    tiempo_restante = (evaluacion.duracion * 60) - int((timezone.now() - evaluacion.fecha_creacion).total_seconds())
+    # Calcular el tiempo restante restando el tiempo pasado de la duración total
+    tiempo_restante_timedelta = duracion_evaluacion - tiempo_pasado  
+    tiempo_restante = int(tiempo_restante_timedelta.total_seconds())
+
+    minutos_restantes = tiempo_restante // 60
+    segundos_restantes = tiempo_restante % 60
 
     context = {
         'evaluacion': evaluacion,
@@ -101,7 +160,8 @@ def detalle_evaluacion(request, evaluacion_id):
         'pregunta_idx': pregunta_idx + 1,
         'total_preguntas': total_preguntas,
         'opciones': pregunta.opcionrespuesta_set.all(),
-        'tiempo_restante': tiempo_restante,
+        'minutos_restantes': minutos_restantes,
+        'segundos_restantes': segundos_restantes,
     }
     return render(request, 'Asignaturas/detalle_evaluacion.html', context)
 
@@ -128,3 +188,9 @@ def resultado_evaluacion(request, evaluacion_id):
     }
     return render(request, 'Asignaturas/resultado_evaluacion.html', context)
 
+@login_required
+def retroalimentacion(request, evaluacion_id):
+    evaluacion =  get_object_or_404(Evaluaciones, pk=evaluacion_id)
+    # Puedes pasar datos adicionales a la plantilla si es necesario
+    context = {'evaluacion': evaluacion}
+    return render(request, 'Asignaturas/retroalimentacion.html', context)

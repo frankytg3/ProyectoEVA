@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Curso, Docente, Estudiante, Evaluaciones, Pregunta,RespuestaCorrecta
+from .models import Curso, Docente, Estudiante, Evaluaciones, Pregunta,Respuesta
 from .models import OpcionRespuesta, Calificaciones, MonitoreoExamen  #, salon 
 # Register your models here.
 
@@ -16,19 +16,30 @@ class evaluacionesAdmin (admin.ModelAdmin):
     list_display=("curso","docente","nombre_Evaluacion","numPreguntas","duracion","fecha_creacion","fecha_fin")
 
 class preguntaAdmin(admin.ModelAdmin):
-    list_display=("evaluacion","texto")
+    list_display=("evaluacion","texto","puntos")
 
 class opcionesAdmin(admin.ModelAdmin):
-    list_display=("pregunta","opcion","respuesta")
+    list_display=("pregunta","opcion","texto_respuesta","es_correcta")
 
 class calificacionesAdmin(admin.ModelAdmin):
     list_display=("estudiante","curso","evaluacion","nota")
+class RespuestaAdmin(admin.ModelAdmin):
+    list_display=("estudiante","pregunta","opcion_seleccionada","fecha")
 
 class monitoreoAdmin(admin.ModelAdmin):
-    list_display=("evaluacion","estudiante","cantErrorFacial","porcenComportamiento","tiempoPromedio","tiempoPorPregunta","tiempoPorPregunta","porcenPlagioTotal")
+    list_display=(
+        "evaluacion",
+        "estudiante",
+        "cantErrorFacial",
+        "porcenComportamiento",
+        "tiempoPromedio",
+        "tiempoPorPregunta",
+        "tiempoPorPregunta",
+        "porcenPlagioTotal",
+        "inicio_evaluacion",
+        )
 
-class respuestaCorrectaAdmin(admin.ModelAdmin):
-    list_display=("pregunta","respuesta")
+
 # salon--(pendiente)
 """
 class SalonAdmin(admin.ModelAdmin):
@@ -44,7 +55,8 @@ admin.site.register(Estudiante, estudianteAdmin)
 admin.site.register(Evaluaciones,evaluacionesAdmin )
 admin.site.register(Pregunta, preguntaAdmin)
 admin.site.register(OpcionRespuesta, opcionesAdmin)
+admin.site.register(Respuesta, RespuestaAdmin)
 admin.site.register(Calificaciones, calificacionesAdmin)
 admin.site.register(MonitoreoExamen, monitoreoAdmin)
-admin.site.register(RespuestaCorrecta, respuestaCorrectaAdmin)
+
 

@@ -118,6 +118,7 @@ class Evaluaciones(models.Model):
 
     def __str__(self):
         return self.nombre_Evaluacion
+    
 
 
 
@@ -126,21 +127,49 @@ class Evaluaciones(models.Model):
 class Pregunta(models.Model):
     evaluacion = models.ForeignKey(Evaluaciones, on_delete=models.CASCADE)
     texto = models.CharField(max_length=255) 
-
+    puntos = models.FloatField(validators=[validate_nota], default=0)
     class Meta:
         verbose_name='pregunta'
         verbose_name_plural='preguntas'
         db_table='preguntas'
 
+    def respuesta_completa(self):
+        respuesta_completa = "{}, {}".format(self.evaluacion, self.texto)
+        return respuesta_completa.upper()
+    
     def __str__(self):
-        return self.texto 
+        return self.respuesta_completa()
 
 #tabla de opciones de las rpeguntas del examens----------------------
 class OpcionRespuesta(models.Model):
     pregunta = models.ForeignKey(Pregunta, on_delete=models.CASCADE)
     opcion = models.CharField(max_length=1, choices=opcionesRpta)
-    respuesta = models.CharField(max_length=255)
-   
+    texto_respuesta = models.CharField(max_length=255)
+    es_correcta = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name='opcion'
+        verbose_name_plural='opciones'
+        db_table='opciones_examen'
+
+    def respuesta_completa(self):
+        respuesta_completa = "{}, {}".format(self.opcion, self.es_correcta)
+        return respuesta_completa.upper()
+    
+    def __str__(self):
+        return self.respuesta_completa()
+    
+
+# Respuestas de los estudiantes en cada examen
+class Respuesta(models.Model):
+    estudiante = models.ForeignKey(User, on_delete=models.CASCADE)
+    pregunta = models.ForeignKey(Pregunta, on_delete=models.CASCADE)
+    opcion_seleccionada = models.ForeignKey(OpcionRespuesta, on_delete=models.CASCADE)
+    fecha = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.estudiante} - {self.pregunta} - {self.opcion_seleccionada}"
+    
 #tabla calificaciones------------------------------------------
 
 class Calificaciones(models.Model):
@@ -152,26 +181,19 @@ class Calificaciones(models.Model):
 #tabla Monitoreo de examen por tiempo
 
 class MonitoreoExamen(models.Model):
-    
     evaluacion = models.ForeignKey(Evaluaciones, on_delete=models.CASCADE)
-    estudiante=models.ForeignKey(Estudiante,on_delete=models.CASCADE)
-    porcenPlagioTotal=models.FloatField(verbose_name="porcentaje plagio")
-    cantErrorFacial=models.IntegerField(verbose_name="errores faciales")
-    porcenComportamiento=models.FloatField(verbose_name="comp sospechoso")
-    tiempoPromedio=models.TimeField(verbose_name="tiempo examen")
-    tiempoPorPregunta=models.TimeField(verbose_name="tiempo pregunta")
-   # Tabla RespuestaCorrecta
-class RespuestaCorrecta(models.Model):
-    pregunta = models.OneToOneField(Pregunta, on_delete=models.CASCADE, related_name='respuesta_correcta')
-    respuesta = models.CharField(max_length=1, choices=opcionesRpta)
+    estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
+    porcenPlagioTotal = models.FloatField(verbose_name="porcentaje plagio")
+    cantErrorFacial = models.IntegerField(verbose_name="errores faciales")
+    porcenComportamiento = models.FloatField(verbose_name="comp sospechoso")
+    tiempoPromedio = models.TimeField(verbose_name="tiempo examen")
+    tiempoPorPregunta = models.TimeField(verbose_name="tiempo pregunta")
+    inicio_evaluacion = models.DateTimeField(default=timezone.now, verbose_name="Inicio de Evaluación")
 
     class Meta:
-        verbose_name = 'respuesta_correcta'
-        verbose_name_plural = 'respuestas_correctas'
-        db_table = 'respuestas_correctas'
-
-    def __str__(self):
-        return f"Pregunta: {self.pregunta.texto}, Respuesta Correcta: {self.respuesta}"    
+        verbose_name = 'monitoreo_examen'
+        verbose_name_plural = 'monitoreo_examenes'
+        db_table = 'monitoreo_examenes'
    
     
    

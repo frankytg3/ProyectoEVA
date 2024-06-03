@@ -1,4 +1,3 @@
-
 {% extends "portalEstudiante/base.html" %}
 {% load static %}
 {% load widget_tweaks %}
@@ -17,7 +16,7 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="opcion" id="opcion{{ opcion.id }}" value="{{ opcion.id }}">
                                 <label class="form-check-label" for="opcion{{ opcion.id }}">
-                                    {{ opcion.respuesta }}
+                                    {{ opcion.texto_respuesta }}
                                 </label>
                             </div>
                         {% endfor %}
@@ -29,28 +28,43 @@
     </div>
     <div class="row mt-4">
         <div class="col-12">
-            <div class="alert alert-info">
-                Tiempo restante: <span id="timer">{{ tiempo_restante }}</span> segundos
+            <div class="alert alert-info" id="timer">
+                Tiempo restante: <span id="minutes">{{ minutos_restantes }}</span> minutos <span id="seconds">{{ segundos_restantes }}</span> segundos
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    var tiempo_restante = {{ tiempo_restante }};
-    var timerElement = document.getElementById('timer');
+    var minutosRestantes = {{ minutos_restantes }};
+    var segundosRestantes = {{ segundos_restantes }};
+    var minutesElement = document.getElementById('minutes');
+    var secondsElement = document.getElementById('seconds');
+
     function startTimer() {
-        setInterval(function() {
-            if (tiempo_restante <= 0) {
+        var timerInterval = setInterval(function() {
+            if (minutosRestantes <= 0 && segundosRestantes <= 0) {
+                clearInterval(timerInterval);
                 alert('El tiempo ha terminado');
                 window.location.href = "{% url 'finalizar_evaluacion' evaluacion.id %}";
             } else {
-                tiempo_restante--;
-                timerElement.textContent = tiempo_restante;
+                if (segundosRestantes <= 0) {
+                    minutosRestantes--;
+                    segundosRestantes = 59;
+                } else {
+                    segundosRestantes--;
+                }
+
+                // Agrega ceros a la izquierda si es necesario
+                var minutosStr = String(minutosRestantes).padStart(2, '0');
+                var segundosStr = String(segundosRestantes).padStart(2, '0');
+
+                minutesElement.textContent = minutosStr;
+                secondsElement.textContent = segundosStr;
             }
         }, 1000);
     }
+
     startTimer();
 </script>
 {% endblock %}
-

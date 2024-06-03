@@ -26,7 +26,7 @@ opcionesRpta=(
     ('A','opcion A'),
     ('B','opcion B'),
     ('C','opcion C'),
-    ('D','Opcion D')
+    ('D','opcion D')
 )
 
 

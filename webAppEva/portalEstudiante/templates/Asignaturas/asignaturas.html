@@ -3,10 +3,17 @@
 {% load widget_tweaks %}
 
 {% block content %}
+<div class="container mt-3">
+    <div class="contenido">
+        <h2 class="text-center" style="font-family: 'Rockwell', sans-serif;">ASIGNATURAS</h2>
+    </div>
+</div>
+
 <div class="container mt-5">
     <div class="row">
         {% if cursos %}
             {% for curso in cursos %}
+                
                 <div class="col-md-4 mb-4">
                     <div class="card h-100">
                         <div class="card-body">
