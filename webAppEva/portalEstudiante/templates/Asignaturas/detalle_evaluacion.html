@@ -1,1 +1,56 @@
-aqui van las evaluaciones
+
+{% extends "portalEstudiante/base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+{% block content %}
+<div class="container mt-5">
+    <h2>{{ evaluacion.nombre_Evaluacion }}</h2>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Pregunta {{ pregunta_idx }} de {{ total_preguntas }}</h5>
+                    <p class="card-text">{{ pregunta.texto }}</p>
+                    <form method="post">
+                        {% csrf_token %}
+                        {% for opcion in opciones %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="opcion" id="opcion{{ opcion.id }}" value="{{ opcion.id }}">
+                                <label class="form-check-label" for="opcion{{ opcion.id }}">
+                                    {{ opcion.respuesta }}
+                                </label>
+                            </div>
+                        {% endfor %}
+                        <button type="submit" class="btn btn-primary mt-3">Siguiente</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="alert alert-info">
+                Tiempo restante: <span id="timer">{{ tiempo_restante }}</span> segundos
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var tiempo_restante = {{ tiempo_restante }};
+    var timerElement = document.getElementById('timer');
+    function startTimer() {
+        setInterval(function() {
+            if (tiempo_restante <= 0) {
+                alert('El tiempo ha terminado');
+                window.location.href = "{% url 'finalizar_evaluacion' evaluacion.id %}";
+            } else {
+                tiempo_restante--;
+                timerElement.textContent = tiempo_restante;
+            }
+        }, 1000);
+    }
+    startTimer();
+</script>
+{% endblock %}
+

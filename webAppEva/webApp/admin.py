@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Curso, Docente, Estudiante, Evaluaciones, Pregunta
+from .models import Curso, Docente, Estudiante, Evaluaciones, Pregunta,RespuestaCorrecta
 from .models import OpcionRespuesta, Calificaciones, MonitoreoExamen  #, salon 
 # Register your models here.
 
@@ -27,6 +27,8 @@ class calificacionesAdmin(admin.ModelAdmin):
 class monitoreoAdmin(admin.ModelAdmin):
     list_display=("evaluacion","estudiante","cantErrorFacial","porcenComportamiento","tiempoPromedio","tiempoPorPregunta","tiempoPorPregunta","porcenPlagioTotal")
 
+class respuestaCorrectaAdmin(admin.ModelAdmin):
+    list_display=("pregunta","respuesta")
 # salon--(pendiente)
 """
 class SalonAdmin(admin.ModelAdmin):
@@ -44,4 +46,5 @@ admin.site.register(Pregunta, preguntaAdmin)
 admin.site.register(OpcionRespuesta, opcionesAdmin)
 admin.site.register(Calificaciones, calificacionesAdmin)
 admin.site.register(MonitoreoExamen, monitoreoAdmin)
+admin.site.register(RespuestaCorrecta, respuestaCorrectaAdmin)
 

@@ -160,8 +160,18 @@ class MonitoreoExamen(models.Model):
     porcenComportamiento=models.FloatField(verbose_name="comp sospechoso")
     tiempoPromedio=models.TimeField(verbose_name="tiempo examen")
     tiempoPorPregunta=models.TimeField(verbose_name="tiempo pregunta")
-   
-    
+   # Tabla RespuestaCorrecta
+class RespuestaCorrecta(models.Model):
+    pregunta = models.OneToOneField(Pregunta, on_delete=models.CASCADE, related_name='respuesta_correcta')
+    respuesta = models.CharField(max_length=1, choices=opcionesRpta)
+
+    class Meta:
+        verbose_name = 'respuesta_correcta'
+        verbose_name_plural = 'respuestas_correctas'
+        db_table = 'respuestas_correctas'
+
+    def __str__(self):
+        return f"Pregunta: {self.pregunta.texto}, Respuesta Correcta: {self.respuesta}"    
    
     
    
