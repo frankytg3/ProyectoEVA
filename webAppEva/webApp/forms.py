@@ -2,7 +2,7 @@
 from django import forms
 from webApp.choices import sexos, persona
 from django.core.exceptions import ValidationError
-from .models import Evaluaciones
+from .models import Evaluaciones, Estudiante
 
 def dominio_continental_validator(value):
     if not value.endswith('@continental.edu.pe'):
@@ -33,6 +33,21 @@ class FormEstudiate(forms.Form):
     nombres=forms.CharField(max_length=20,validators=[no_numeros_validator])
     fecha_Nacimiento=forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
     sexo = forms.ChoiceField(choices=sexos, initial='-')
+    foto = forms.ImageField(required=True)
+
+    class Meta:
+        model = Estudiante
+        fields = ['correo', 'apellido_Paterno', 'apellido_Materno', 'nombres', 'fecha_Nacimiento', 'sexo', 'foto']
+    
+    def clean_foto(self):
+        foto = self.cleaned_data.get('foto')
+        if foto:
+            if not foto.name.endswith('.png'):
+                raise ValidationError("Solo se permiten archivos PNG.")
+            if foto.content_type != 'image/png':
+                raise ValidationError("Solo se permiten archivos PNG.")
+        return foto
+
     
 class FormOpcion(forms.Form):
     Persona = forms.ChoiceField(choices=persona)

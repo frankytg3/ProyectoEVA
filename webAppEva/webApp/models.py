@@ -5,8 +5,7 @@ from .choices import sexos, seccion, modalida, validate_nota, opcionesRpta
 from django.contrib.auth.models import User
 
 
-# Create your models here.
-
+# Create your models here.   
 #tabla Docente -----------------------
 class Docente(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='docente')
@@ -53,6 +52,7 @@ class Estudiante(models.Model):
     nombres=models.CharField(max_length=20)
     fecha_nacimiento=models.DateField(verbose_name='fecha de Nacimiento')
     sexo=models.CharField(max_length=1, choices=sexos, default='-')
+    foto = models.ImageField(upload_to='fotos_estudiantes/', verbose_name='foto', default='fotos_estudiantes/default.png')
     
 
     def nombre_completo(self):

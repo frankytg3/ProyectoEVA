@@ -50,7 +50,7 @@ def registrarDocente(request):
 
 def registrarEstudiante(request):
     if request.method == "POST":
-        formEstudiante = FormEstudiate(request.POST)
+        formEstudiante = FormEstudiate(request.POST, request.FILES)
         formRegister = UserCreationForm(request.POST)
         if formEstudiante.is_valid() and formRegister.is_valid():
             try:
@@ -59,6 +59,7 @@ def registrarEstudiante(request):
                 user.email = correo  # Establecer el correo electrónico del usuario
                 user.save()
                 # Crear estudiante asociado al usuario
+
                 Estudiante.objects.create(
                     user=user,
                     apellido_paterno=formEstudiante.cleaned_data['apellido_Paterno'],
@@ -66,6 +67,8 @@ def registrarEstudiante(request):
                     nombres=formEstudiante.cleaned_data['nombres'],
                     fecha_nacimiento=formEstudiante.cleaned_data['fecha_Nacimiento'],
                     sexo=formEstudiante.cleaned_data['sexo'],
+                    foto=formEstudiante.cleaned_data['foto'],
+
                 )
                 messages.success(request, 'Usuario registrado exitosamente. Por favor inicia sesión.')
                 return redirect('login')

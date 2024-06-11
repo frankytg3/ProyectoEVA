@@ -7,7 +7,7 @@
         <div class="col-md-8">
             <div class="card shadow-lg">
                 <div class="card-body">
-                    <form action="" method="post" class="form-floating">
+                    <form action="" method="post" class="form-floating" enctype="multipart/form-data">
                         {% csrf_token %}
 
                         <h5 class="mb-3">Datos de Usuario</h5>
@@ -86,6 +86,14 @@
                                 <div class="error-message text-danger">{{ error }}</div>
                                 {% endfor %}
                             </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_foto" class="form-label">Subir Foto de tu Rostro (PNG)</label>
+                            {{ formEstudiante.foto|add_class:"form-control" }}
+                            {% for error in formEstudiante.foto.errors %}
+                            <div class="error-message text-danger">{{ error }}</div>
+                            {% endfor %}
                         </div>
 
                         <div class="d-flex justify-content-between mt-4">
