@@ -24,9 +24,13 @@ def evaluaciones(request, id):
         curso = get_object_or_404(Curso, id=id)
         evaluaciones = Evaluaciones.objects.filter(curso=curso)
         calificaciones = Calificaciones.objects.filter(estudiante=request.user.estudiante, curso=curso)
+        monitoreo_examen = MonitoreoExamen.objects.filter(evaluacion__in=evaluaciones, estudiante=request.user.estudiante).first()
         
         evaluaciones_data = []
         today = date.today()
+
+        if monitoreo_examen:
+            monitoreo=True
 
         for evaluacion in evaluaciones:
             num_preguntas = evaluacion.pregunta_set.count()
@@ -34,7 +38,7 @@ def evaluaciones(request, id):
             estado = 'Sin evaluar'
 
             if calificacion:
-                if calificacion.nota > 0:
+                if calificacion.nota > 0 or monitoreo:
                     estado = 'Realizada'
             elif evaluacion.fecha_fin and evaluacion.fecha_fin.date() < today:
                 estado = 'Caducada'
@@ -109,6 +113,7 @@ def detalle_evaluacion(request, evaluacion_id):
             tiempoPorPregunta=timezone.now(),
             inicio_evaluacion=timezone.now()
         )
+    
 
     if request.method == 'POST':
         seleccion_id = request.POST.get('opcion')
@@ -138,12 +143,7 @@ def detalle_evaluacion(request, evaluacion_id):
     tiempo_inicio = monitoreo_examen.inicio_evaluacion.astimezone(zona_horaria)
     tiempo_actual = timezone.now().astimezone(zona_horaria)
     tiempo_pasado = tiempo_actual - tiempo_inicio
-    print("Zona horaria")
-    print(zona_horaria)
-    print("tiempo_inicio")
-    print(tiempo_inicio)
-    print("tiempo_actual")
-    print(tiempo_actual)
+
     # Convertir la duración de la evaluación a timedelta
     duracion_evaluacion = timedelta(minutes=evaluacion.duracion)
 
@@ -191,6 +191,31 @@ def resultado_evaluacion(request, evaluacion_id):
 @login_required
 def retroalimentacion(request, evaluacion_id):
     evaluacion =  get_object_or_404(Evaluaciones, pk=evaluacion_id)
+    curso = evaluacion.curso 
     # Puedes pasar datos adicionales a la plantilla si es necesario
-    context = {'evaluacion': evaluacion}
+    context = {'evaluacion': evaluacion,
+               'curso': curso,
+               }
+    
     return render(request, 'Asignaturas/retroalimentacion.html', context)
+
+
+import subprocess
+from django.http import HttpResponse
+
+def ejecutar(request):
+    # Ruta del archivo .py que deseas ejecutar
+    script_path = 'C:/Users/Usuario/ReconocimientoFacial/ReconocimientoEva12/Reconocimientov11.py'
+    
+    # Ejecutar el script y capturar la salida
+    result = subprocess.run(['python', script_path], capture_output=True, text=True)
+    
+    # Opcional: procesar la salida
+    output = result.stdout
+    error = result.stderr
+
+    if result.returncode == 0:
+        return HttpResponse(f"Script ejecutado con éxito:\n{output}")
+    else:
+        return HttpResponse(f"Error al ejecutar el script:\n{error}")
+

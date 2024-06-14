@@ -37,6 +37,7 @@
                                         Sin evaluar
                                     {% endif %}
                                 </p>
+                                 
                                 <p class="card-text">Estado: {{ estado }}</p>
                                 <div style="text-align: center;">
                                     <a href="{% if num_preguntas == 0 %}#{% elif estado == 'Realizada' or estado == 'Caducada' %}{% url 'retroalimentacion' evaluacion.id %}{% else %}{% url 'detalle_evaluacion' evaluacion.id %}{% endif %}" class="btn btn-primary {% if num_preguntas == 0 or estado == 'Caducada' %}disabled{% endif %}">

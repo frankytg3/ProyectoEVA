@@ -32,7 +32,7 @@ class Docente(models.Model):
 
 #tabla Curso ------------------------------
 class Curso(models.Model):
-    nombre=models.CharField(max_length=20)
+    nombre=models.CharField(max_length=50)
     docente = models.ForeignKey(Docente, on_delete=models.CASCADE, related_name='cursos')
 
     class Meta:
@@ -134,7 +134,8 @@ class Pregunta(models.Model):
         db_table='preguntas'
 
     def respuesta_completa(self):
-        respuesta_completa = "{}, {}".format(self.evaluacion, self.texto)
+        texto_recortado = self.texto[:25] + ('...' if len(self.texto) > 25 else '')
+        respuesta_completa = "{}, {}".format(self.evaluacion, texto_recortado)
         return respuesta_completa.upper()
     
     def __str__(self):

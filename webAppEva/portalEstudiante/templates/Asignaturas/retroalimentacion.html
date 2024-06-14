@@ -1,6 +1,11 @@
 {% extends "portalEstudiante/base.html" %}
 {% load widget_tweaks %}
 {% block content %}
+
+<div class="d-flex justify-content-end mb-2">
+    <a href="{% url 'evaluaciones' id=curso.id %}" class="btn btn-primary">Volver</a>
+</div>
+
 <div class="container mt-5">
     <h2 class="text-center text-danger">Comunicado: Aún no hay Retroalimentación de la Evaluación</h2>
     <p class="text-center">Por favor, intenta acceder a la retroalimentación más tarde.</p>
