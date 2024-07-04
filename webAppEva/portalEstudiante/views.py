@@ -200,22 +200,3 @@ def retroalimentacion(request, evaluacion_id):
     return render(request, 'Asignaturas/retroalimentacion.html', context)
 
 
-import subprocess
-from django.http import HttpResponse
-
-def ejecutar(request):
-    # Ruta del archivo .py que deseas ejecutar
-    script_path = 'C:/Users/Usuario/ReconocimientoFacial/ReconocimientoEva12/Reconocimientov11.py'
-    
-    # Ejecutar el script y capturar la salida
-    result = subprocess.run(['python', script_path], capture_output=True, text=True)
-    
-    # Opcional: procesar la salida
-    output = result.stdout
-    error = result.stderr
-
-    if result.returncode == 0:
-        return HttpResponse(f"Script ejecutado con éxito:\n{output}")
-    else:
-        return HttpResponse(f"Error al ejecutar el script:\n{error}")
-
